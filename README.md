@@ -52,8 +52,9 @@ jupyter notebook notebooks/
 | Clustering equipos (§4.2, K=3, 489 snapshots) | Implementado — DB≈2.26, tamaños 137/186/166, representativos Brugge/Charleroi/Sociedad |
 | Clustering jugadores (§4.3, K=3, 20k muestra) | Implementado — DB≈1.56, perfiles Defensor/Medio/Delantero, representativos McGivern/Dessena/Nijland |
 | Clasificación XGBoost (PA/TA/odds/racha, ~52% test) | Implementado (`00_reporte_xgboost.ipynb`) |
-| Red neuronal TabNet (§5.4, 51.12% reportado) | Pendiente — celda rota en `Pred-Racha` |
-| Regularización / early stopping / Optuna (§5.3) | Pendiente |
+| Regularización + early stopping (§5.3) | Implementado — train 56.89%, test 52.41%, gap 4.48pp (`01_mitigacion_tabnet.ipynb`) |
+| Búsqueda con Optuna (§5.3, 50 trials) | Implementado — mejor mlogloss 0.966, test 51.54% |
+| Red neuronal TabNet (§5.4, 51.12% reportado) | Implementado — test 50.99%, celda de `Pred-Racha` corregida |
 | Regresión atributos de jugador (objetivo 3) | Pendiente |
 
 ### Resultados de clustering (coincidencia con el informe)

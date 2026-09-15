@@ -37,12 +37,11 @@ jupyter notebook notebooks/
 ├── informe/               Informe final (TPIG2.md / TPIG2.pdf)
 ├── models/                Modelos serializados (*.joblib, no versionados)
 ├── notebooks/
-│   ├── 00_tutorials/      Guías P0–P6 (prácticas)
-│   ├── 01_eda/            Exploración: Country, League, Team, Match, Player/Team Attributes
-│   ├── 02_clustering/     (pendiente) Clustering jugadores y equipos — informe §4.2 / §4.3
+│   ├── 02_clustering/     Clustering jugadores y equipos — informe §4.2 / §4.3
 │   ├── 03_classification/ Predicción H/D/A con XGBoost, cuotas, rachas y TabNet
 │   └── 04_regression/     (pendiente) Regresión de atributos — objetivo 3
-└── src/mineria/           Código reutilizable (rutas, carga de datos, features, modelos)
+├── scripts/               Validación terminal (experiments.py)
+└── src/mineria/           Código reutilizable (rutas, carga, features, modelos, clustering, plots)
 ```
 
 ## Estado del proyecto vs informe
@@ -50,11 +49,22 @@ jupyter notebook notebooks/
 | Componente | Estado |
 |---|---|
 | EDA (tablas y cuotas de apuestas) | Implementado (`notebooks/01_eda`, `03_classification/Pred-*`) |
-| Clasificación XGBoost (PA/TA/odds/racha, ~52% test) | Implementado |
-| Clustering jugadores y equipos (§4.2 / §4.3) | **Pendiente** |
-| Red neuronal TabNet (§5.4, 51.12% reportado) | **Pendiente — celda rota en `Pred-Racha`** |
-| Regularización / early stopping / Optuna (§5.3) | **Pendiente** |
-| Regresión atributos de jugador (objetivo 3) | **Pendiente** |
+| Clustering equipos (§4.2, K=3, 489 snapshots) | Implementado — DB≈2.26, tamaños 137/186/166, representativos Brugge/Charleroi/Sociedad |
+| Clustering jugadores (§4.3, K=3, 20k muestra) | Implementado — DB≈1.56, perfiles Defensor/Medio/Delantero, representativos McGivern/Dessena/Nijland |
+| Clasificación XGBoost (PA/TA/odds/racha, ~52% test) | Implementado (`00_reporte_xgboost.ipynb`) |
+| Red neuronal TabNet (§5.4, 51.12% reportado) | Pendiente — celda rota en `Pred-Racha` |
+| Regularización / early stopping / Optuna (§5.3) | Pendiente |
+| Regresión atributos de jugador (objetivo 3) | Pendiente |
+
+### Resultados de clustering (coincidencia con el informe)
+
+| Metrica | Equipos | Jugadores |
+|---|---|---|
+| N total | 489 | 20,000 |
+| DB @ K=3 | 2.26 (informe: 2.51→2.10 rango K=2..6) | 1.56 (informe: 1.54) |
+| Sizes | 137 / 186 / 166 | 7831 / 5643 / 6526 |
+| Representativos | Club Brugge KV / Sporting Charleroi / Real Sociedad | Stefan Nijland / Ryan McGivern / Daniele Dessena |
+| Perfiles | Conservador / Contraataque / Ofensivo | Delantero / Defensor / Mediocampista |
 
 ## Datos de referencia del informe
 

@@ -1,6 +1,12 @@
 # SQLite database files
 *.sqlite
 
+# Datos y modelos (regenerables / descargables manualmente)
+data/
+models/
+*.joblib
+*.pkl
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

@@ -698,39 +698,39 @@ overall_rating
 
 Selección del parámetro K. La Figura 4.3 (fila inferior) muestra que el DB Score es
 
-mínimo para K=3 (1.54), con un deterioro claro a partir de K=4. La curva del codo confirma
+mínimo para K=3 (1.56), con un deterioro claro a partir de K=4. La curva del codo confirma
 
 que la reducción de inercia más pronunciada ocurre entre K=2 y K=3. Se seleccionó K=3.
 
 Perfiles identificados. La Figura 4.5 presenta el perfil de habilidades de cada grupo:
 
-●  Defensor (n=5.813, 29.1%): valores bajos en remate (finishing: 34.2) y regate
+●  Defensor (n=5.643, 28.2%): valores bajos en remate (finishing: 33.7) y regate
 
-(dribbling: 47.1), pero altos en marca (marking: 61.7) y entrada firme
+(dribbling: 47.7), pero altos en marca (marking: 62.3) y entrada firme
 
-(standing_tackle: 64.3). Su velocidad punta (sprint_speed) y resistencia (stamina) son
+(standing_tackle: 64.9). Su velocidad punta (sprint_speed) y resistencia (stamina) son
 
 moderadas. Este grupo agrupa a los jugadores cuya función principal es neutralizar al
 
 rival.
 
-●  Mediocampista (n=6.493, 32.5%): perfil más equilibrado. Presenta el mayor pase
+●  Mediocampista (n=6.526, 32.6%): perfil más equilibrado. Presenta el mayor pase
 
-corto (short_passing) del dataset (72.9) y valores intermedios tanto en ataque como en
+corto (short_passing) del dataset (72.6) y valores intermedios tanto en ataque como en
 
-defensa (marca, marking: 63.1; entrada firme, standing_tackle: 68.1; remate,
+defensa (marca, marking: 63.3; entrada firme, standing_tackle: 68.3; remate,
 
-finishing: 54.0). Son los jugadores bisagra entre fases.
+finishing: 53.5). Son los jugadores bisagra entre fases.
 
 TP Integrador
 
 19
 
-●  Delantero (n=7.694, 38.5%): el grupo más numeroso. Destaca con el mayor remate
+●  Delantero (n=7.831, 39.2%): el grupo más numeroso. Destaca con el mayor remate
 
-(finishing: 65.8), regate (dribbling: 62.2) y visión de juego (vision: 61.3), pero con
+(finishing: 66.0), regate (dribbling: 70.1) y visión de juego (vision: 63.0), pero con
 
-marca (marking: 27.9) y entrada firme (standing_tackle: 31.6) muy bajos. Estos
+marca (marking: 27.8) y entrada firme (standing_tackle: 31.6) muy bajos. Estos
 
 jugadores están optimizados para la creación y conversión de goles.
 
@@ -746,9 +746,9 @@ localizar aquellos futbolistas de la muestra cuya distancia euclidiana respecto 
 
 de cada clúster es mínima, actuando como referentes empíricos de cada categoría.
 
-Grupo  Mediocampista:  Las  entidades  más  próximas  al  centroide  (finishing:  54.0;
+Grupo  Mediocampista:  Las  entidades  más  próximas  al  centroide  (finishing:  53.5;
 
-short_passing:  72.9;  marking: 63.1) son Paulo Tavares, Daniele Dessena y Ljubomir Fejsa.
+short_passing:  72.6;  marking: 63.3) son Daniele Dessena, Marco Caligiuri y Nico Pulzetti.
 
 Se  observa  que  estos  jugadores  mantienen  una  identidad  de  mediocampistas  integrales con
 
@@ -760,17 +760,19 @@ una  equilibrada  capacidad  de  distribución  y  recuperación,  lo  cual  rat
 
 semántica del perfil bisagra esperado.
 
-Grupo  Defensor:  Destacan  como  exponentes  Ryan  McGivern  y  Bart  Schenkeveld
+Grupo  Defensor:  Destacan  como  exponentes  Ryan  McGivern,  Karel  van  Roose  y  Oliver
 
-(marking:  61.7;  standing_tackle:  64.3).  Ambos  perfiles  corresponden  a  especialistas
+Vinamont
+
+(marking:  62.3;  standing_tackle:  64.9).  Ambos  perfiles  corresponden  a  especialistas
 
 defensivos  con una participación ofensiva marginal en términos de remate, validando que el
 
 algoritmo logra aislar correctamente las funciones de neutralización del rival.
 
-Grupo Delantero: Los referentes de este clúster (finishing: 65.8; marking: 27.9) son
+Grupo Delantero: Los referentes de este clúster (finishing: 66.0; marking: 27.8) son
 
-Stefan  Nijland,  Marco  Matias  y  Mirko  Antenucci.  El  desempeño  de  estos  atacantes  se
+Stefan  Nijland,  Pablo  Chavarria  y  Aleksandar  Trajkovski.  El  desempeño  de  estos  atacantes  se
 
 caracteriza por una alta eficacia en la finalización y una nula implicación en tareas de marca,
 
@@ -1096,15 +1098,15 @@ Al  optimizar  la  función  de  pérdida  multiclase  (mlogloss),  el  modelo  
 
 clase minoritaria de mayor incertidumbre en favor de las clases con señal más fuerte.
 
-El  conjunto  Combinado  obtiene  la  mejor  exactitud  en  test  (52.2%),  apenas  por  encima  de
+El  conjunto  Combinado  obtiene  la  mejor  exactitud  en  test  (52.42%),  apenas  por  encima  de
 
-Player  Attributes  (51.9%),  lo  que  indica  que  sumar  cuotas  de  apuesta  y  racha  reciente  al
+Player  Attributes  (52.00%),  lo  que  indica  que  sumar  cuotas  de  apuesta  y  racha  reciente  al
 
 conjunto  de  atributos  de  jugador  aporta  una  mejora  marginal,  no  sustancial.  Resulta
 
 especialmente relevante que el modelo entrenado únicamente con las tres cuotas de casas de
 
-apuestas alcance un 51.5% de exactitud en test, prácticamente igualando al modelo de Player
+apuestas alcance un 52.19% de exactitud en test, incluso por encima del modelo de Player
 
 Attributes pese a utilizar solo tres variables de entrada frente a varias decenas. Esto refuerza
 
@@ -1162,23 +1164,33 @@ local
 
 vez establecido el contexto de forma reciente, y no como predictores primarios.
 
+Cabe  aclarar  que  este  árbol  se  entrenó  sobre  el  Combinado  sin  incorporar  cuotas  de
+
+apuesta:  al  incluir  las  cuotas  en  el  conjunto  de  datos,  la  raíz  pasa  a  ser  la  cuota  del  local
+
+(B365H  ≤  2.64)  y  las  rachas  y  atributos  de  jugador  quedan  relegados  a  niveles  inferiores.
+
+Esto  evidencia  que  la  señal  del  mercado  condensa  la  información  más  determinante
+
+disponible, en línea con lo discutido en la Sección 5.1.
+
 Las variables más importantes del ensamble completo de XG Boost coinciden, en su mayoría,
 
 con las utilizadas en los primeros niveles del árbol individual presentado anteriormente:
 
-Las dos variables más relevantes para el ensamble completo (600 árboles, 200 por clase) son,
+En  el  ensamble  completo  del  Combinado  (que  sí  incorpora  cuotas),  las  tres  variables  más
 
-en  el  mismo  orden  que  en  el  árbol individual, away_streak_10 y home_streak_10, seguidas
+importantes  son  B365H,  B365A  y  B365D,  seguidas  por  las  rachas  recientes (home_streak_15)
 
-por away_player_3_overall_rating en tercer lugar. La coincidencia entre el árbol individual y
+y  algunos  atributos  de  jugador.  Esta  jerarquía  confirma  lo  planteado  en  la  Sección  5.1:  la
 
-el  ensamble  completo  refuerza  la  validez  de  esta  jerarquía:  la  racha  reciente  domina  la
+cuota  de  apuesta  condensa  una  inteligencia  colectiva  del  mercado  que  resulta  difícil  de
 
-decisión por sobre cualquier atributo técnico o táctico extraído de FIFA, lo cual es consistente
+igualar  con  atributos  técnicos  individuales,  y  cuando  está  disponible  domina  el  árbol
 
-con la intuición futbolística de que la forma de un equipo en sus últimos partidos constituye
+individual  y  el  ensamble  completo,  con  una  ventaja  clara  por  sobre  el  perfil  estático  de
 
-un indicador de rendimiento más inmediato que su perfil estático de habilidades.
+habilidades extraído de FIFA.
 
 La complejidad estructural del modelo Combinado, se detalla a continuación:
 
@@ -1208,15 +1220,15 @@ Nodos hoja promedio por árbol
 
 31
 
-15
+17
 
 31
 
-29.28
+29.26
 
-14.14
+14.13
 
-15.14
+15.13
 
 Métrica
 
@@ -1240,11 +1252,11 @@ Nodos de partición totales
 
 600
 
-17,566
+17,556
 
-9,083
+9,078
 
-8,483
+8,478
 
 Hiper Parámetros
 
@@ -1296,7 +1308,7 @@ el  aprendizaje  en  numerosas  correcciones  pequeñas,  reduciendo  el  riesgo
 
 severo.  Como  resultado,  la  diferencia  entre  el  rendimiento  de  entrenamiento  y  prueba  se
 
-mantiene  moderada  (8,3 puntos), pero también limita la capacidad del modelo para capturar
+mantiene  moderada  (7,35 puntos), pero también limita la capacidad del modelo para capturar
 
 relaciones complejas entre los atributos de los jugadores, lo que contribuye a que la exactitud
 
@@ -1306,11 +1318,11 @@ Conclusión respecto al objetivo de rentabilidad
 
 Los  cuatro  modelos entrenados superan ampliamente el azar: frente a una probabilidad base
 
-de 33% para tres clases, el mejor modelo (Combinado) alcanza 52.2% de exactitud en test, es
+de 33% para tres clases, el mejor modelo (Combinado) alcanza 52.42% de exactitud en test, es
 
 decir,  más  de  19  puntos  por  encima  de  adivinar  al  azar.  Esto  confirma  que  las  variables
 
-seleccionadas  (especialmente  la  racha  reciente  de ambos equipos) capturan una señal real y
+seleccionadas  (las  cuotas  de  apuesta  y  la  racha  reciente  de  ambos  equipos) capturan una señal real y
 
 consistente sobre el resultado de un partido, validada tanto por el árbol de decisión individual
 
@@ -1318,11 +1330,13 @@ como por el ensamble completo de XG Boost.
 
 En ese sentido, el resultado más valioso de este trabajo no es tanto la exactitud final, sino la
 
-jerarquía  de  variables  que  el  modelo  permitió  identificar:  la  forma  reciente  de  un  equipo
+jerarquía  de  variables  que  el  modelo  permitió  identificar:  la  cuota  de  apuesta —que
 
-(home_streak_10,  away_streak_10)  resulta  más  informativa  que  su  perfil  estático  de
+condensa  la  forma  reciente  y  la  calidad  percibida  de  ambos  equipos—  y  las  rachas
 
-habilidades  técnicas,  un  hallazgo  que  tiene  sentido futbolístico y que podría ser el punto de
+recientes  (home_streak_10,  away_streak_10)  resultan  más  informativas  que  su  perfil
+
+estático  de  habilidades  técnicas,  un  hallazgo  que  tiene  sentido futbolístico y que podría ser el punto de
 
 partida  para  futuras  iteraciones  del  proyecto,  por  ejemplo  incorporando  variables  de  racha
 
@@ -1411,29 +1425,31 @@ Modelo Regularizado
 
 Accuracy entrenamiento
 
-60.48%
+60.52%
 
 Accuracy test
 
 Brecha train-test
 
-52.17%
+52.48%
 
-8.31 pp
+8.04 pp
 
-57.44%
+56.89%
 
-52.02%
+52.41%
 
-5.42 pp
+4.48 pp
 
-La brecha se redujo en casi 3 puntos porcentuales, lo que indica que la regularización limitó
+La brecha se redujo en más de 3,5 puntos porcentuales, lo que indica que la regularización limitó
 
 efectivamente  la  memorización  de  patrones  del entrenamiento. Sin embargo, el accuracy de
 
-test  no  mejoró,  lo  que  sugiere  que  el  techo  de  rendimiento  no  está  determinado  por  el
+test  prácticamente  no  varió  (de  52.48%  a  52.41%),  lo  que  sugiere  que  el  techo  de
 
-sobreajuste sino por el límite informativo de las variables disponibles.
+rendimiento  no  está  determinado  por  el sobreajuste sino por el límite informativo de las
+
+variables disponibles.
 
 Búsqueda de Hiper Parámetros con Optuna
 
@@ -1461,21 +1477,23 @@ colsample_bytree
 
 gamma
 
-346
+480
 
-0.0177
+0.0698
 
-5
+3
 
-0.845
+0.577
 
-0.665
+0.554
 
-0.0997
+0.0526
 
-Con  estos  valores  se  obtuvo  un  accuracy  de  entrenamiento  de  59.89% y de test de 52.31%
+Con  estos  valores  se  obtuvo  un  accuracy  de  entrenamiento  de  66.62% y de test de 51.54%
 
-(brecha  de  7.58  pp).  La  mejora  sobre  el  modelo  regularizado  manualmente  es  marginal, lo
+(brecha  de  15.08  pp).  La  exactitud  de  entrenamiento  sube  notablemente  respecto  del
+
+regularizado  manual,  pero  la  de  test  no  mejora  y  la  brecha  crece, lo
 
 TP Integrador
 
@@ -1483,7 +1501,7 @@ Con  estos  valores  se  obtuvo  un  accuracy  de  entrenamiento  de  59.89% y d
 
 que confirma que, con el conjunto de features actual, el margen de mejora por ajuste de hiper
 
-parámetros es limitado.
+parámetros es limitado y que el sobreajuste no es la única causa del techo de rendimiento.
 
 5.4 Modelo de Red Neuronal: TabNet
 
@@ -1509,39 +1527,123 @@ Away Win
 
 Accuracy
 
-0.5267
+0.5195
 
-0.5000
+0.4348
 
-0.4699
+0.4822
 
-0.8345
+0.8479
 
-0.0010
+0.0101
 
-0.4455
+0.4116
 
-0.6457
+0.6443
 
-0.0020
+0.0198
 
-0.4574
+0.4441
 
-51.12%
+50.99%
 
-TabNet  (51.12%)  no  supera  a  XGBoost  (52.02%–52.31%),  lo  cual  es  consistente  con  la
+TabNet  (50.99%)  no  supera  a  XGBoost  (52.41%–52.48%),  lo  cual  es  consistente  con  la
 
 naturaleza  del  dataset:  al  tratarse  de variables tabulares con una señal concentrada en pocas
 
-variables (rachas, rating de jugadores clave), los ensambles de árboles resultan más eficientes
+variables (cuotas de apuesta, rachas, rating de jugadores clave), los ensambles de árboles
+
+resultan más eficientes
 
 que una arquitectura neuronal, que típicamente requiere mayores volúmenes de datos.
 
-5.5 Conclusión sobre los enfoques
+5.5 Regresión de atributos de jugador (Objetivo 3)
+
+Como  tercer  objetivo,  se  construyó  un  modelo  de  regresión  para  estimar  la  valoración
+
+general (overall_rating) de  un  jugador  a  partir  de  su  perfil  físico  y  su  posición  en  el
+
+campo.
+
+Con  base  en  el  agrupamiento  de  la  Sección  4.3  y  en  las  habilidades  de  arquero,  se
+
+derivó  la  posición  de  cada  jugador  (Arquero,  Defensor,  Mediocampista  o  Delantero).  El
+
+conjunto  resultante  quedó  compuesto  por  10.621  jugadores  (una  fila  por  jugador,  con  su
+
+última  valoración  disponible),  y  se  separó  en  80%  de  entrenamiento  y  20%  de  test.  Se
+
+utilizaron  como  variables  de  entrada  solo  el  perfil  físico  (edad,  altura,  peso)  y  la
+
+posición  codificada,  evaluando  cuatro  modelos:  un  baseline  por  regla  de  decisión  (siempre
+
+la  valoración  media),  Ridge,  Random  Forest  y  XGBoost.
+
+Modelo
+
+MAE
+
+RMSE
+
+R²
+
+Baseline
+
+Ridge
+
+Random Forest
+
+XGBoost
+
+5.034
+
+4.558
+
+4.537
+
+4.417
+
+6.264
+
+5.656
+
+5.629
+
+5.454
+
+-0.004
+
+0.182
+
+0.189
+
+0.239
+
+El  mejor  rendimiento  lo  alcanza  XGBoost,  con  un  MAE  de  4.42  puntos  y  un  R²  de  0.24,
+
+lo  que  indica  que  el  perfil  físico  y  la  posición  explican  aproximadamente  una  cuarta
+
+parte  de  la  variabilidad  de  la  valoración.  El  grueso  de  la  valoración  depende  de
+
+habilidades  técnicas  que  no  están  disponibles  como  entrada,  por  lo  que  el  error  de
+
+predicción  se  ubica  en  torno  a  los  4,4  puntos  sobre  la  escala  de  0  a  100.  Aun  así,  el
+
+resultado  es  relevante:  la  posición  derivada  a  partir  del  clustering  y  el  físico  aportan
+
+una  señal  no  trivial,  y  son  consistentes  con  la  intuición  de  que  un  jugador  ofensivo  o
+
+de  gran  envergadura  tiende  a  ser  valorado  de  manera  distinta  a  un  defensor  o  un
+
+mediocampista.
+
+5.6 Conclusión sobre los enfoques
 
 Las correcciones aplicadas redujeron el sobreajuste original sin sacrificar accuracy de test, y
 
-Optuna  aportó  una  mejora  adicional  marginal.  La  exploración  con  TabNet  confirma  que  el
+la  búsqueda  de  hiper  parámetros  con  Optuna  no  logró  superar  al  regularizado  en  test,  lo
+
+que  reafirma  el  techo  informativo  del  dataset.  La  exploración  con  TabNet  confirma  que  el
 
 problema tiene un techo de accuracy cercano al 52% con las variables actuales, y que la clase
 

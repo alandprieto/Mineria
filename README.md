@@ -1,12 +1,90 @@
 # Minería de Datos — TP Integrador
 
-Predicción de resultados de fútbol europeo y análisis de perfiles de jugadores/equipos a partir de la [European Soccer Database](https://www.kaggle.com/datasets/hugomathien/soccer) (Kaggle), correspondiente al Trabajo Práctico Integrador bajo el informe `informe/TPIG2.md`.
+Análisis y modelado sobre la [European Soccer Database](https://www.kaggle.com/datasets/hugomathien/soccer) (Kaggle, de la serie FIFA de EA Sports): predicción de resultados de fútbol europeo y caracterización de perfiles de jugadores y equipos a partir de atributos técnicos, tácticos y físicos. El detalle metodológico y la interpretación de los resultados se documentan en `informe/TPIG2.md`.
 
-## Objetivos (según el informe)
+## Objetivos
 
-1. **Clustering**: identificar arquetipos de jugadores y estilos tácticos de equipos (K-Medias).
-2. **Clasificación**: predecir el resultado de un partido (victoria local, empate, victoria visitante).
-3. **Regresión**: estimar atributos de rendimiento de un jugador según su perfil físico y posición.
+1. **Clustering**: identificar arquetipos de jugadores y estilos tácticos de equipos mediante K-Medias.
+2. **Clasificación**: predecir el resultado de un partido (victoria local, empate, victoria visitante) con XGBoost, cuotas de apuesta, rachas recientes y TabNet.
+3. **Regresión**: estimar la valoración general (`overall_rating`) de un jugador a partir de su perfil físico y su posición.
+
+## Resultados
+
+Todos los valores provienen de la ejecución real del código sobre `data/database.sqlite` (ver [Reproducción](#reproducción)).
+
+### Clustering de equipos (§4.2 del informe)
+
+| Ítem | Valor |
+|---|---|
+| Registros tácticos | 489 snapshots de `Team_Attributes` |
+| Parámetro K | 3 (DB K2=2.51 … K6=2.10; DB@K3≈2.26) |
+| Tamaños | Conservador 137 · Contraataque 186 · Ofensivo 166 |
+| Representativos | Club Brugge KV / Sporting Charleroi / Real Sociedad |
+
+### Clustering de jugadores (§4.3 del informe)
+
+| Ítem | Valor |
+|---|---|
+| Elegibles | 166.432 snapshots (sin arqueros, 24 atributos) |
+| Muestra | 20.000 registros (`random_state=42`) |
+| Parámetro K | 3 (DB@K3 ≈ 1.56) |
+| Tamaños | Delantero 7.831 · Mediocampista 6.526 · Defensor 5.643 |
+| Representativos | Stefan Nijland / Daniele Dessena / Ryan McGivern |
+
+El algoritmo reproduce, sin información de posición, las tres posiciones fundamentales del fútbol de campo.
+
+### Clasificación — XGBoost (§5.2)
+
+Accuracy de entrenamiento y test sobre 25.979 partidos con 5 recetas de features (breakeven de rentabilidad ≈ 54.05 %):
+
+| Receta | Entrenamiento | Test |
+|---|---|---|
+| Team Attributes | 52.95 % | 50.54 % |
+| Player Attributes | 60.86 % | 52.00 % |
+| Player + Team | 60.87 % | 51.92 % |
+| Betting Odds (B365) | 52.59 % | 52.19 % |
+| Combinado (PA + TA + cuotas + racha) | 59.77 % | **52.42 %** |
+
+Ningún modelo alcanza el umbral de rentabilidad. Las cuotas de apuesta, por sí solas, igualan al mejor modelo de atributos, consistente con la sección de cuotas del informe (§5.1). En el Combinado, la cuota local (B365H) es la variable más importante del árbol y del ensamble.
+
+### Mitigación del sobreajuste (§5.3) y TabNet (§5.4)
+
+| Modelo | Entrenamiento | Test | Brecha |
+|---|---|---|---|
+| Original (Combinado) | 60.52 % | 52.48 % | 8.04 pp |
+| Regularizado + early stopping | 56.89 % | 52.41 % | 4.48 pp |
+| Optuna (50 trials, mlogloss valid 0.966) | 66.62 % | 51.54 % | 15.08 pp |
+| TabNet (best_epoch 79) | — | 50.99 % | — |
+
+La regularización redujo la brecha train-test sin sacrificar exactitud de test; la búsqueda de hiperparámetros no mejoró el rendimiento en test, lo que sugiere un techo informativo del dataset cercano al 52 %.
+
+### Regresión de atributos de jugador (objetivo 3, §5.5 del informe)
+
+10.621 jugadores; entrada solo perfil físico (edad, altura, peso) y posición derivada del clustering:
+
+| Modelo | MAE | RMSE | R² |
+|---|---|---|---|
+| Baseline | 5.034 | 6.264 | -0.004 |
+| Ridge | 4.558 | 5.656 | 0.182 |
+| Random Forest | 4.537 | 5.629 | 0.189 |
+| XGBoost | **4.417** | **5.454** | **0.239** |
+
+El físico y la posición explican cerca de un cuarto de la variabilidad de la valoración; el resto depende de habilidades técnicas no incluidas como entrada.
+
+## Estructura
+
+```
+├── data/                  database.sqlite (descargar manualmente, no versionado)
+├── informe/               Informe final (TPIG2.md)
+├── models/                Modelos serializados (*.joblib, no versionados)
+├── notebooks/
+│   ├── 01_eda/            Análisis exploratorio y cuotas de apuesta
+│   ├── 02_clustering/     Clustering de equipos y jugadores (§4.2 / §4.3)
+│   ├── 03_classification/ XGBoost, cuotas, rachas, regularización y TabNet (§5.2–§5.4)
+│   └── 04_regression/     Regresión de atributos — objetivo 3 (§5.5)
+├── scripts/               Validación por terminal (experiments.py, generación de notebooks)
+└── src/mineria/           Código reutilizable (rutas, carga, features, modelos, clustering, plots)
+```
 
 ## Setup
 
@@ -36,7 +114,7 @@ jupyter notebook notebooks/
 Los notebooks canónicos ya vienen ejecutados con sus salidas. Para regenerarlos desde cero:
 
 ```bash
-# 1. Pipeline de clasificación (5 recetas, tabla 7 del informe)
+# 1. Pipeline de clasificación (5 recetas)
 .venv/Scripts/python.exe scripts/experiments.py
 
 # 2. Notebooks canónicos (re-ejecución in-place con salidas frescas)
@@ -58,54 +136,6 @@ Notas de ejecución:
 - `Pred-Racha.ipynb` usa rutas relativas (`../../data/...`) y debe ejecutarse desde su propio directorio (`notebooks/03_classification/`), o directamente en Jupyter.
 - `Pred-Racha.ipynb` entrena su propio modelo y lo guarda en `models/modelo_pred_racha_analisis.joblib` (sin tocar el artefacto canónico consumido por `src/mineria/inference.py`).
 
-## Estructura
+## Dependencias
 
-```
-├── data/                  database.sqlite (descargar manualmente, no versionado)
-├── informe/               Informe final (TPIG2.md / TPIG2.pdf)
-├── models/                Modelos serializados (*.joblib, no versionados)
-├── notebooks/
-│   ├── 02_clustering/     Clustering jugadores y equipos — informe §4.2 / §4.3
-│   ├── 03_classification/ Predicción H/D/A con XGBoost, cuotas, rachas y TabNet
-│   └── 04_regression/     Regresión de atributos — objetivo 3
-├── scripts/               Validación terminal (experiments.py)
-└── src/mineria/           Código reutilizable (rutas, carga, features, modelos, clustering, plots)
-```
-
-## Estado del proyecto vs informe
-
-| Componente | Estado |
-|---|---|
-| EDA (tablas y cuotas de apuestas) | Implementado (`notebooks/01_eda`, `03_classification/Pred-*`) |
-| Clustering equipos (§4.2, K=3, 489 snapshots) | Implementado — DB≈2.26, tamaños 137/186/166, representativos Brugge/Charleroi/Sociedad |
-| Clustering jugadores (§4.3, K=3, 20k muestra) | Implementado — DB≈1.56, perfiles Defensor/Medio/Delantero, representativos McGivern/Dessena/Nijland |
-| Clasificación XGBoost (PA/TA/odds/racha, ~52% test) | Implementado (`00_reporte_xgboost.ipynb`) |
-| Regularización + early stopping (§5.3) | Implementado — train 56.89%, test 52.41%, gap 4.48pp (`01_mitigacion_tabnet.ipynb`) |
-| Búsqueda con Optuna (§5.3, 50 trials) | Implementado — mejor mlogloss 0.966, test 51.54% |
-| Red neuronal TabNet (§5.4, 51.12% reportado) | Implementado — test 50.99%, celda de `Pred-Racha` corregida |
-| Regresión atributos de jugador (objetivo 3) | Implementado — XGBoost MAE 4.42, RMSE 5.45, R² 0.239 (`01_regresion_atributos.ipynb`) |
-
-### Resultados de clustering (coincidencia con el informe)
-
-| Metrica | Equipos | Jugadores |
-|---|---|---|
-| N total | 489 | 20,000 |
-| DB @ K=3 | 2.26 (informe: 2.51→2.10 rango K=2..6) | 1.56 (informe: 1.54) |
-| Sizes | 137 / 186 / 166 | 7831 / 5643 / 6526 |
-| Representativos | Club Brugge KV / Sporting Charleroi / Real Sociedad | Stefan Nijland / Ryan McGivern / Daniele Dessena |
-| Perfiles | Conservador / Contraataque / Ofensivo | Delantero / Defensor / Mediocampista |
-
-## Fidelidad al informe
-
-Todos los resultados de este repo son **realmente computados** sobre `data/database.sqlite` con el código de `src/mineria/`. Las diferencias observadas frente a `informe/TPIG2.md` se deben a versiones de librerías y a la variación propia de los procedimientos estocásticos, y **no** a ajuste de resultados:
-
-- **Clustering jugadores (§4.3)**: DB 1.562 vs 1.54 del informe; tamaños de cluster 7831/5643/6526 vs 7694/5813/6493. El conteo de elegibles (166.432) y las medias de perfil coinciden.
-- **TabNet (§5.4)**: exactitud 50.99% vs 51.12%; el patrón de predicción (recall alto en victoria local, casi nulo en empate) se reproduce.
-- **Optuna (§5.3)**: nuestro mejor estudio (mlogloss valid 0.966, test 51.54%) difiere del del informe por la búsqueda estocástica; ambos logran el mismo rango de precisión.
-- **Regresión (objetivo 3)**: es un diseño propio alineado al enunciado (el informe no detalla la sección); R² 0.239 con XGBoost sobre perfil físico + posición.
-
-## Datos de referencia del informe
-
-- Umbral de rentabilidad (breakeven): `1 / 1.85 ≈ 54.05%`.
-- Hiperparámetros base XGBoost: `multi:softprob`, `num_class=3`, `mlogloss`, 200 estimadores, `max_depth=4`, `learning_rate=0.05`, `tree_method=hist`, `random_state=42`.
-- Casas de apuestas en orden por cobertura: B365 (13.04%) < BW < WH < VC < LB < IW < SJ (34.19%) < GB < BS < PS (57.01%).
+Entorno `.venv` usado para generar todos los resultados: `python 3.13`, `pandas 3.0.5`, `scikit-learn 1.9.1`, `xgboost 3.4.1`, `optuna 5.0.0`, `pytorch-tabnet`, `torch 2.14.0+cpu`. Ver `requirements.txt` para la lista completa.

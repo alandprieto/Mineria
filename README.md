@@ -39,7 +39,7 @@ jupyter notebook notebooks/
 ├── notebooks/
 │   ├── 02_clustering/     Clustering jugadores y equipos — informe §4.2 / §4.3
 │   ├── 03_classification/ Predicción H/D/A con XGBoost, cuotas, rachas y TabNet
-│   └── 04_regression/     (pendiente) Regresión de atributos — objetivo 3
+│   └── 04_regression/     Regresión de atributos — objetivo 3
 ├── scripts/               Validación terminal (experiments.py)
 └── src/mineria/           Código reutilizable (rutas, carga, features, modelos, clustering, plots)
 ```
@@ -55,7 +55,7 @@ jupyter notebook notebooks/
 | Regularización + early stopping (§5.3) | Implementado — train 56.89%, test 52.41%, gap 4.48pp (`01_mitigacion_tabnet.ipynb`) |
 | Búsqueda con Optuna (§5.3, 50 trials) | Implementado — mejor mlogloss 0.966, test 51.54% |
 | Red neuronal TabNet (§5.4, 51.12% reportado) | Implementado — test 50.99%, celda de `Pred-Racha` corregida |
-| Regresión atributos de jugador (objetivo 3) | Pendiente |
+| Regresión atributos de jugador (objetivo 3) | Implementado — XGBoost MAE 4.42, RMSE 5.45, R² 0.239 (`01_regresion_atributos.ipynb`) |
 
 ### Resultados de clustering (coincidencia con el informe)
 

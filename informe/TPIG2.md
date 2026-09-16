@@ -78,6 +78,8 @@ Sin embargo, se detectó una pérdida de información sistemática en la tabla M
 - **Eventos del partido**: todos los atributos correspondientes a los eventos del partido (tales como `goal`, `shoton`, `card` y `possession`) presentan exactamente **11.762 valores nulos**.
 - **Cuotas de apuestas**: fluctúan severamente dependiendo de la cobertura de cada proveedor (por ejemplo, la casa de apuestas Pinnacle carece de más del 50% de sus datos históricos).
 
+![Figura 3.1 — Distribución de resultados (Victoria Local, Empate, Victoria Visitante)](../graficos/01_distribucion_resultados.png)
+
 Para un primer análisis sobre el conjunto de datos, se inspeccionaron los posibles valores atípicos mediante diagramas de caja (Boxplots) y estadísticos descriptivos.
 
 El estudio de valores atípicos en `df_player_attributes` exige una segmentación previa de la población para una correcta interpretación de las distribuciones. Esto obedece a que las habilidades de portería (`gk_diving`, `gk_handling`, `gk_kicking`, `gk_positioning`, `gk_reflexes`) y las de campo son excluyentes por la lógica del videojuego. Bajo esta premisa, se categorizaron **13.394 arqueros** (con `gk_diving ≥ 60`) y **167.871 jugadores de campo**, graficando sus comportamientos de manera independiente.
@@ -110,7 +112,11 @@ Una presencia de casi el 50% de nulos en variables de apuestas impide el uso de 
 
 El dataset abarca **11 ligas europeas de 11 países distintos**, con un total de **25.979 partidos** disputados a lo largo de **8 temporadas (2008/09 – 2015/16)** y **299 equipos únicos**.
 
+![Figura 4.1 — Cantidad de partidos por liga y distribución por temporada](../graficos/fig4_1_estructura_ligas.png)
+
 Como se observa en la Figura 4.1, la distribución de partidos no es uniforme entre ligas. Las cuatro grandes ligas (Premier League, Ligue 1, La Liga y Serie A) concentran el mayor volumen con aproximadamente 3.040 partidos cada una, mientras que la Swiss Super League es la liga con menor representación (1.422 partidos). Esto responde a que las ligas más pequeñas tienen menos equipos participantes. La distribución por temporada es relativamente estable, con una leve caída en la temporada 2015/16, posiblemente por datos aún incompletos al momento de la recolección.
+
+![Figura 4.2 — Equipos únicos por liga y win rate local por liga](../graficos/fig4_2_equipos_ligas.png)
 
 La Figura 4.2 presenta dos perspectivas complementarias. A la izquierda, la cantidad de equipos únicos por liga varía entre **16 (Bundesliga)** y **26 (Serie A)**, lo cual explica directamente las diferencias en el volumen de partidos observadas en la Figura 4.1. A la derecha, se analiza el win rate local por liga: en todas las competencias el equipo local gana con mayor frecuencia que el visitante, confirmando la ventaja de localía a nivel global (**45.87% de victorias locales** en el dataset). La liga española muestra el valor más alto (48.8%), mientras que la Premier League escocesa exhibe el más bajo (41.7%), sugiriendo diferencias de competitividad entre ligas que el modelo de clasificación deberá considerar.
 
@@ -134,7 +140,9 @@ Los nombres utilizados para los atributos en esta sección corresponden a los si
 | Agresividad defensiva | `defenceAggression` |
 | Amplitud defensiva | `defenceTeamWidth` |
 
-**Selección del parámetro K.** Como se muestra en la Figura 4.3 (fila superior), se evaluaron valores de K entre 2 y 6 utilizando dos criterios complementarios: el índice Davies-Bouldin (DB) (donde menores valores indican clusters más compactos y separados) y la curva del codo (inercia intra-cluster). El DB Score mejora progresivamente desde **K=2 (2.51)** hasta **K=6 (2.10)**, sin un punto de quiebre pronunciado. No obstante, la curva del codo muestra una reducción de inercia marcada entre K=2 y K=3, con una inflexión clara en ese punto. Combinando ambos criterios y priorizando la interpretabilidad semántica de los grupos en el contexto del dominio futbolístico, se seleccionó **K=3** como configuración óptima.
+![Figura 4.3 — Selección de K: DB Score y curva del codo (equipos)](../graficos/fig4_3_seleccion_k.png)
+
+**Selección del parámetro K.** Como se muestra en la Figura 4.3, se evaluaron valores de K entre 2 y 6 utilizando dos criterios complementarios: el índice Davies-Bouldin (DB) (donde menores valores indican clusters más compactos y separados) y la curva del codo (inercia intra-cluster). El DB Score mejora progresivamente desde **K=2 (2.51)** hasta **K=6 (2.10)**, sin un punto de quiebre pronunciado. No obstante, la curva del codo muestra una reducción de inercia marcada entre K=2 y K=3, con una inflexión clara en ese punto. Combinando ambos criterios y priorizando la interpretabilidad semántica de los grupos en el contexto del dominio futbolístico, se seleccionó **K=3** como configuración óptima.
 
 **Perfiles identificados.** La Figura 4.4 presenta los tres grupos obtenidos mediante gráficos de radar y una comparación de atributos clave:
 
@@ -142,9 +150,7 @@ Los nombres utilizados para los atributos en esta sección corresponden a los si
 - **Grupo 2 — Contraataque (n=186, el más numeroso)**: equipos con velocidad de juego (`buildUpPlaySpeed`) media-alta (57.5) pero presión defensiva (`defencePressure`) notablemente baja (38.1) y agresividad defensiva (`defenceAggression`) reducida (43.6). Este perfil refleja un estilo de bloque bajo con transiciones rápidas.
 - **Grupo 3 — Ofensivo (n=166)**: equipos con los valores más altos en creación de disparo (`chanceCreationShooting`: 56.8), alta velocidad de juego (`buildUpPlaySpeed`: 57.7) y presión defensiva (`defencePressure`) activa (50.1). Corresponde a equipos que imponen su juego en ambas fases.
 
-![Figura 4.4 — Estilos tácticos de equipos identificados por K-Medias (K=3)](../graficos/clusters_equipos.png)
-
-![Figura 4.4 — Estilos tácticos de equipos identificados por K-Medias (K=3)](../graficos/clusters_equipos.png)
+![Figura 4.4 — Estilos tácticos de equipos identificados por K-Medias (K=3)](../graficos/fig4_4_team_clusters.png)
 
 Esta clasificación tiene relevancia directa para el modelo de predicción: un enfrentamiento entre un equipo Conservador y uno Ofensivo tiene características estructuralmente distintas a un duelo entre dos equipos de Contraataque.
 
@@ -172,7 +178,9 @@ Los nombres utilizados en esta sección corresponden a los siguientes atributos 
 | Cabeceo | `heading_accuracy` |
 | Rating general | `overall_rating` |
 
-**Selección del parámetro K.** La Figura 4.3 (fila inferior) muestra que el DB Score es **mínimo para K=3 (1.56)**, con un deterioro claro a partir de K=4. La curva del codo confirma que la reducción de inercia más pronunciada ocurre entre K=2 y K=3. Se seleccionó **K=3**.
+![Figura 4.3 — Selección de K: DB Score y curva del codo (jugadores)](../graficos/fig4_3_seleccion_k.png)
+
+**Selección del parámetro K.** La Figura 4.3 muestra que el DB Score es **mínimo para K=3 (1.56)**, con un deterioro claro a partir de K=4. La curva del codo confirma que la reducción de inercia más pronunciada ocurre entre K=2 y K=3. Se seleccionó **K=3**.
 
 **Perfiles identificados.** La Figura 4.5 presenta el perfil de habilidades de cada grupo:
 
@@ -180,9 +188,7 @@ Los nombres utilizados en esta sección corresponden a los siguientes atributos 
 - **Mediocampista (n=6.526, 32.6%)**: perfil más equilibrado. Presenta el mayor pase corto (`short_passing`) del dataset (72.6) y valores intermedios tanto en ataque como en defensa (marca, `marking`: 63.3; entrada firme, `standing_tackle`: 68.3; remate, `finishing`: 53.5). Son los jugadores bisagra entre fases.
 - **Delantero (n=7.831, 39.2%)**: el grupo más numeroso. Destaca con el mayor remate (`finishing`: 66.0), regate (`dribbling`: 70.1) y visión de juego (`vision`: 63.0), pero con marca (`marking`: 27.8) y entrada firme (`standing_tackle`: 31.6) muy bajos. Estos jugadores están optimizados para la creación y conversión de goles.
 
-![Figura 4.5 — Perfiles de habilidad promedio por cluster (radar, K=3)](../graficos/clusters_jugadores.png)
-
-![Figura 4.5 — Perfiles de habilidad promedio por cluster (radar, K=3)](../graficos/clusters_jugadores.png)
+![Figura 4.5 — Perfiles de habilidad promedio por cluster (K=3)](../graficos/fig4_5_player_clusters.png)
 
 Es notable que el algoritmo, sin recibir información sobre las posiciones de los jugadores, logró reproducir con notable precisión las tres posiciones fundamentales del fútbol de campo.
 
@@ -204,9 +210,13 @@ Tal como se mencionó en la Sección 4.4, las cuotas de apuesta de Bet365 (B365H
 
 Al clasificar los resultados en Victoria Local, Empate y Victoria Visitante, observamos un sesgo marcado hacia la localía.
 
+![Figura 5.1 — Boxplot de la cuota B365H por resultado del partido](../graficos/02_boxplot_b365h.png)
+
 Para afinar la selección de atributos, se analizó el comportamiento de las cuotas. Al observar el diagrama de caja (boxplot) de la cuota B365H, se evidencia que en los partidos que finalizaron en victoria local, el valor de la mediana de estas cuotas es significativamente más bajo (**1.85**) en comparación con las medianas observadas en los empates o derrotas.
 
 Este patrón de "cuota baja = alta probabilidad" es consistente en todas las casas de apuestas analizadas. Para verificar esta consistencia, se comparó el comportamiento de B365H con el de las 3 casas de apuestas con menor proporción de datos faltantes (BWH, WHH y VCH). Dado que B365H es la que presenta mayor cobertura de datos entre todas las disponibles, se mantiene como la variable principal de cuotas para el análisis posterior. Esta comparación confirma que las cuotas son predictores robustos y uniformes entre proveedores.
+
+![Figura 5.2 — Comparación de Win Rates y distribución de B365H≤1.85](../graficos/04_win_rate_comparison.png)
 
 El uso de cuotas como variable de entrada permite capturar una "inteligencia colectiva" que eleva la tasa de acierto. Al segmentar los partidos por rangos de cuotas, se observa que a menor cuota asignada al local, el Win Rate efectivo aumenta. Utilizar la cuota mínima como criterio de decisión es fundamental para el éxito del modelo. El mismo se mide por su capacidad de alcanzar el umbral de rentabilidad del **54.05%**. Este valor representa el punto de equilibrio (breakeven) matemático para una cuota estándar de 1.85, calculado mediante la probabilidad implícita (1 / 1.85). Superar este porcentaje de acierto es el objetivo final de este trabajo, ya que implica que el algoritmo no solo predice mejor que el azar, sino que es capaz de neutralizar la comisión de la casa de apuestas y generar una ganancia neta.
 
@@ -262,6 +272,8 @@ En este caso se hace un cambio de estrategia. Se hace un análisis solo con la i
 
 Finalmente, se hace un análisis con todas las características anteriores posibles. Además, se hace una ingeniería sobre los datos presentes: se suma un atributo de "Racha" para el equipo local y visitante, en donde se hace un conteo de los últimos encuentros en una ventana de **5, 10 y 15 partidos**.
 
+![Figura 5.2 — Estrategia de unificación de tablas para el conjunto Combinado](../graficos/fig4_6_join_strategy.png)
+
 #### Análisis Comparativo de Resultados
 
 Entre los resultados de los cuatro modelos entrenados (Team Attributes, Player Attributes, Betting Odds y el conjunto Combinado) se observa un patrón consistente: en todos los casos el modelo predice con mayor precisión y recall la clase Victoria Local (Home Win), mientras que la clase Empate (Draw) resulta sistemáticamente la más difícil de capturar. Este comportamiento es consistente con la naturaleza estadística del empate: a diferencia de una victoria, que suele estar asociada a una diferencia de forma o calidad entre los equipos, un empate puede originarse tanto en partidos parejos como en partidos dominados que no se concretan en gol, lo que dificulta que el algoritmo identifique un patrón discriminante claro. Al optimizar la función de pérdida multiclase (mlogloss), el modelo tiende a sacrificar la clase minoritaria de mayor incertidumbre en favor de las clases con señal más fuerte.
@@ -276,9 +288,7 @@ Entre los resultados de los cuatro modelos entrenados (Team Attributes, Player A
 
 El conjunto **Combinado** obtiene la mejor exactitud en test (52.42%), apenas por encima de Player Attributes (52.00%), lo que indica que sumar cuotas de apuesta y racha reciente al conjunto de atributos de jugador aporta una mejora marginal, no sustancial. Resulta especialmente relevante que el modelo entrenado únicamente con las tres cuotas de casas de apuestas alcance un **52.19%** de exactitud en test, incluso por encima del modelo de Player Attributes pese a utilizar solo tres variables de entrada frente a varias decenas. Esto refuerza lo planteado en la Sección 5.1: la cuota de apuesta condensa una inteligencia colectiva del mercado que resulta difícil de igualar con atributos técnicos individuales.
 
-![Figura 5.1 — Accuracy de entrenamiento y test por receta de features, con el umbral de rentabilidad (breakeven)](../graficos/clasificacion_modelos.png)
-
-![Figura 5.1 — Accuracy de entrenamiento y test por receta, con umbral de rentabilidad (breakeven)](../graficos/clasificacion_modelos.png)
+![Figura 5.3 — Accuracy de entrenamiento y test por receta de features, con el umbral de rentabilidad (breakeven)](../graficos/clasificacion_modelos.png)
 
 **Árbol de decisión individual.** Para interpretar de forma más directa la lógica de decisión del modelo, se entrenó y visualizó un árbol de decisión individual (profundidad máxima 3) sobre el conjunto de datos Combinado:
 
@@ -352,9 +362,7 @@ A diferencia del modelo original, que no incorporaba una fase de validación exp
 
 La brecha se redujo en **más de 3.5 puntos porcentuales**, lo que indica que la regularización limitó efectivamente la memorización de patrones del entrenamiento. Sin embargo, el accuracy de test prácticamente no varió (de 52.48% a 52.41%), lo que sugiere que el techo de rendimiento no está determinado por el sobreajuste sino por el límite informativo de las variables disponibles.
 
-![Figura 5.2 — Accuracy de entrenamiento y test por modelo, mostrando la evolución de la brecha de sobreajuste](../graficos/mitigacion_sobreajuste.png)
-
-![Figura 5.2 — Mitigación del sobreajuste: accuracy de entrenamiento y test por modelo](../graficos/mitigacion_sobreajuste.png)
+![Figura 5.4 — Mitigación del sobreajuste: accuracy de entrenamiento y test por modelo](../graficos/mitigacion_sobreajuste.png)
 
 #### Búsqueda de Hiper Parámetros con Optuna
 
@@ -397,11 +405,9 @@ Con base en el agrupamiento de la Sección 4.3 y en las habilidades de arquero, 
 | Random Forest | 4.537 | 5.629 | 0.189 |
 | **XGBoost** | **4.417** | **5.454** | **0.239** |
 
-![Figura 5.3 — MAE, RMSE y R² por modelo en la regresión de overall_rating](../graficos/regresion_atributos.png)
+![Figura 5.5 — MAE, RMSE y R² por modelo en la regresión de overall_rating](../graficos/regresion_atributos.png)
 
 El mejor rendimiento lo alcanza **XGBoost**, con un **MAE de 4.42 puntos** y un **R² de 0.24**, lo que indica que el perfil físico y la posición explican aproximadamente una cuarta parte de la variabilidad de la valoración. El grueso de la valoración depende de habilidades técnicas que no están disponibles como entrada, por lo que el error de predicción se ubica en torno a los 4.4 puntos sobre la escala de 0 a 100. Aun así, el resultado es relevante: la posición derivada a partir del clustering y el físico aportan una señal no trivial, y son consistentes con la intuición de que un jugador ofensivo o de gran envergadura tiende a ser valorado de manera distinta a un defensor o un mediocampista.
-
-![Figura 5.3 — Regresión de overall_rating: MAE, RMSE y R² por modelo](../graficos/regresion_atributos.png)
 
 ### 5.6 Conclusión sobre los enfoques
 

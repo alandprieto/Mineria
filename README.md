@@ -81,21 +81,45 @@ El físico y la posición explican cerca de un cuarto de la variabilidad de la v
 
 Las figuras se encuentran en `graficos/` y se regeneran con `scripts/gen_graficos.py`.
 
-![](graficos/clusters_jugadores.png)
+![](graficos/fig4_1_estructura_ligas.png)
 
-*Perfiles de jugadores por cluster (radar, K=3).*
+*Partidos por liga y distribución por temporada (§4.1).*
+
+![](graficos/fig4_2_equipos_ligas.png)
+
+*Equipos únicos por liga y win rate local (§4.1).*
+
+![](graficos/fig4_3_seleccion_k.png)
+
+*Selección de K: DB Score y curva del codo (§4.2–§4.3).*
+
+![](graficos/fig4_4_team_clusters.png)
+
+*Estilos tácticos de equipos — K-Medias K=3 (§4.2).*
+
+![](graficos/fig4_5_player_clusters.png)
+
+*Perfiles de habilidad por cluster — K-Medias K=3 (§4.3).*
+
+![](graficos/02_boxplot_b365h.png)
+
+*Boxplot de B365H por resultado — mediana 1.85 en victorias locales (§5.1).*
 
 ![](graficos/clasificacion_modelos.png)
 
-*Accuracy por receta de features con umbral de rentabilidad (breakeven).*
+*Accuracy por receta de features con umbral de rentabilidad (breakeven) (§5.2).*
+
+![](graficos/fig4_6_join_strategy.png)
+
+*Estrategia de unificación de tablas para el conjunto Combinado (§5.2).*
 
 ![](graficos/mitigacion_sobreajuste.png)
 
-*Mitigación del sobreajuste: train vs test por modelo.*
+*Mitigación del sobreajuste: train vs test por modelo (§5.3).*
 
 ![](graficos/regresion_atributos.png)
 
-*Regresión de overall_rating: MAE, RMSE y R² por modelo.*
+*Regresión de overall_rating: MAE, RMSE y R² por modelo (§5.5).*
 
 ## Estructura
 

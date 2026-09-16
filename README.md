@@ -1,5 +1,11 @@
 # Minería de Datos — TP Integrador
 
+![Python](https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-1.9-F7931E?logo=scikitlearn&logoColor=white)
+![XGBoost](https://img.shields.io/badge/XGBoost-3.4-EB4C42)
+![TabNet](https://img.shields.io/badge/PyTorch--TabNet-2.14-EE4C2C?logo=pytorch&logoColor=white)
+![Optuna](https://img.shields.io/badge/Optuna-5.0-2E7BB3)
+
 Análisis y modelado sobre la [European Soccer Database](https://www.kaggle.com/datasets/hugomathien/soccer) (Kaggle, de la serie FIFA de EA Sports): predicción de resultados de fútbol europeo y caracterización de perfiles de jugadores y equipos a partir de atributos técnicos, tácticos y físicos. El detalle metodológico y la interpretación de los resultados se documentan en `informe/TPIG2.md`.
 
 ## Objetivos

@@ -142,6 +142,10 @@ Los nombres utilizados para los atributos en esta sección corresponden a los si
 - **Grupo 2 — Contraataque (n=186, el más numeroso)**: equipos con velocidad de juego (`buildUpPlaySpeed`) media-alta (57.5) pero presión defensiva (`defencePressure`) notablemente baja (38.1) y agresividad defensiva (`defenceAggression`) reducida (43.6). Este perfil refleja un estilo de bloque bajo con transiciones rápidas.
 - **Grupo 3 — Ofensivo (n=166)**: equipos con los valores más altos en creación de disparo (`chanceCreationShooting`: 56.8), alta velocidad de juego (`buildUpPlaySpeed`: 57.7) y presión defensiva (`defencePressure`) activa (50.1). Corresponde a equipos que imponen su juego en ambas fases.
 
+![Figura 4.4 — Estilos tácticos de equipos identificados por K-Medias (K=3)](../graficos/clusters_equipos.png)
+
+![Figura 4.4 — Estilos tácticos de equipos identificados por K-Medias (K=3)](../graficos/clusters_equipos.png)
+
 Esta clasificación tiene relevancia directa para el modelo de predicción: un enfrentamiento entre un equipo Conservador y uno Ofensivo tiene características estructuralmente distintas a un duelo entre dos equipos de Contraataque.
 
 Con el fin de validar la consistencia interna de los perfiles identificados, se procedió a localizar aquellos clubes cuyas métricas tácticas presentan la menor distancia euclidiana respecto a cada centroide, actuando como los exponentes más fieles de cada categoría.
@@ -175,6 +179,10 @@ Los nombres utilizados en esta sección corresponden a los siguientes atributos 
 - **Defensor (n=5.643, 28.2%)**: valores bajos en remate (`finishing`: 33.7) y regate (`dribbling`: 47.7), pero altos en marca (`marking`: 62.3) y entrada firme (`standing_tackle`: 64.9). Su velocidad punta (`sprint_speed`) y resistencia (`stamina`) son moderadas. Este grupo agrupa a los jugadores cuya función principal es neutralizar al rival.
 - **Mediocampista (n=6.526, 32.6%)**: perfil más equilibrado. Presenta el mayor pase corto (`short_passing`) del dataset (72.6) y valores intermedios tanto en ataque como en defensa (marca, `marking`: 63.3; entrada firme, `standing_tackle`: 68.3; remate, `finishing`: 53.5). Son los jugadores bisagra entre fases.
 - **Delantero (n=7.831, 39.2%)**: el grupo más numeroso. Destaca con el mayor remate (`finishing`: 66.0), regate (`dribbling`: 70.1) y visión de juego (`vision`: 63.0), pero con marca (`marking`: 27.8) y entrada firme (`standing_tackle`: 31.6) muy bajos. Estos jugadores están optimizados para la creación y conversión de goles.
+
+![Figura 4.5 — Perfiles de habilidad promedio por cluster (radar, K=3)](../graficos/clusters_jugadores.png)
+
+![Figura 4.5 — Perfiles de habilidad promedio por cluster (radar, K=3)](../graficos/clusters_jugadores.png)
 
 Es notable que el algoritmo, sin recibir información sobre las posiciones de los jugadores, logró reproducir con notable precisión las tres posiciones fundamentales del fútbol de campo.
 
@@ -268,6 +276,10 @@ Entre los resultados de los cuatro modelos entrenados (Team Attributes, Player A
 
 El conjunto **Combinado** obtiene la mejor exactitud en test (52.42%), apenas por encima de Player Attributes (52.00%), lo que indica que sumar cuotas de apuesta y racha reciente al conjunto de atributos de jugador aporta una mejora marginal, no sustancial. Resulta especialmente relevante que el modelo entrenado únicamente con las tres cuotas de casas de apuestas alcance un **52.19%** de exactitud en test, incluso por encima del modelo de Player Attributes pese a utilizar solo tres variables de entrada frente a varias decenas. Esto refuerza lo planteado en la Sección 5.1: la cuota de apuesta condensa una inteligencia colectiva del mercado que resulta difícil de igualar con atributos técnicos individuales.
 
+![Figura 5.1 — Accuracy de entrenamiento y test por receta de features, con el umbral de rentabilidad (breakeven)](../graficos/clasificacion_modelos.png)
+
+![Figura 5.1 — Accuracy de entrenamiento y test por receta, con umbral de rentabilidad (breakeven)](../graficos/clasificacion_modelos.png)
+
 **Árbol de decisión individual.** Para interpretar de forma más directa la lógica de decisión del modelo, se entrenó y visualizó un árbol de decisión individual (profundidad máxima 3) sobre el conjunto de datos Combinado:
 
 - La **raíz** del árbol divide los partidos según la racha del equipo local en sus últimos 10 encuentros (`home_streak_10 ≤ 1.613`), con un índice de **Gini de 0.643** sobre los **20.783 registros de entrenamiento**.
@@ -340,6 +352,10 @@ A diferencia del modelo original, que no incorporaba una fase de validación exp
 
 La brecha se redujo en **más de 3.5 puntos porcentuales**, lo que indica que la regularización limitó efectivamente la memorización de patrones del entrenamiento. Sin embargo, el accuracy de test prácticamente no varió (de 52.48% a 52.41%), lo que sugiere que el techo de rendimiento no está determinado por el sobreajuste sino por el límite informativo de las variables disponibles.
 
+![Figura 5.2 — Accuracy de entrenamiento y test por modelo, mostrando la evolución de la brecha de sobreajuste](../graficos/mitigacion_sobreajuste.png)
+
+![Figura 5.2 — Mitigación del sobreajuste: accuracy de entrenamiento y test por modelo](../graficos/mitigacion_sobreajuste.png)
+
 #### Búsqueda de Hiper Parámetros con Optuna
 
 Optuna explora el espacio de hiper parámetros mediante muestreo bayesiano: en cada iteración (trial) evalúa una combinación y orienta la búsqueda hacia las regiones más prometedoras según los resultados previos. Se ejecutaron **50 trials** minimizando el mlogloss de validación. La mejor combinación fue:
@@ -381,7 +397,11 @@ Con base en el agrupamiento de la Sección 4.3 y en las habilidades de arquero, 
 | Random Forest | 4.537 | 5.629 | 0.189 |
 | **XGBoost** | **4.417** | **5.454** | **0.239** |
 
+![Figura 5.3 — MAE, RMSE y R² por modelo en la regresión de overall_rating](../graficos/regresion_atributos.png)
+
 El mejor rendimiento lo alcanza **XGBoost**, con un **MAE de 4.42 puntos** y un **R² de 0.24**, lo que indica que el perfil físico y la posición explican aproximadamente una cuarta parte de la variabilidad de la valoración. El grueso de la valoración depende de habilidades técnicas que no están disponibles como entrada, por lo que el error de predicción se ubica en torno a los 4.4 puntos sobre la escala de 0 a 100. Aun así, el resultado es relevante: la posición derivada a partir del clustering y el físico aportan una señal no trivial, y son consistentes con la intuición de que un jugador ofensivo o de gran envergadura tiende a ser valorado de manera distinta a un defensor o un mediocampista.
+
+![Figura 5.3 — Regresión de overall_rating: MAE, RMSE y R² por modelo](../graficos/regresion_atributos.png)
 
 ### 5.6 Conclusión sobre los enfoques
 

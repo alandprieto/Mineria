@@ -77,10 +77,31 @@ La regularización redujo la brecha train-test sin sacrificar exactitud de test;
 
 El físico y la posición explican cerca de un cuarto de la variabilidad de la valoración; el resto depende de habilidades técnicas no incluidas como entrada.
 
+## Visualizaciones
+
+Las figuras se encuentran en `graficos/` y se regeneran con `scripts/gen_graficos.py`.
+
+![](graficos/clusters_jugadores.png)
+
+*Perfiles de jugadores por cluster (radar, K=3).*
+
+![](graficos/clasificacion_modelos.png)
+
+*Accuracy por receta de features con umbral de rentabilidad (breakeven).*
+
+![](graficos/mitigacion_sobreajuste.png)
+
+*Mitigación del sobreajuste: train vs test por modelo.*
+
+![](graficos/regresion_atributos.png)
+
+*Regresión de overall_rating: MAE, RMSE y R² por modelo.*
+
 ## Estructura
 
 ```
 ├── data/                  database.sqlite (descargar manualmente, no versionado)
+├── graficos/              Figuras para el README y el portfolio (PNG)
 ├── informe/               Informe final (TPIG2.md)
 ├── models/                Modelos serializados (*.joblib, no versionados)
 ├── notebooks/
@@ -134,6 +155,9 @@ done
 .venv/Scripts/python.exe -m nbconvert --execute --to notebook --inplace notebooks/03_classification/Pred-Racha.ipynb
 .venv/Scripts/python.exe scripts/gen_regression_nb.py
 .venv/Scripts/python.exe -m nbconvert --execute --to notebook --inplace notebooks/04_regression/01_regresion_atributos.ipynb
+
+# 3. Figuras del README (graficos/*.png)
+.venv/Scripts/python.exe scripts/gen_graficos.py
 ```
 
 Notas de ejecución:
